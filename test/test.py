@@ -27,7 +27,7 @@ async def test_loopback(dut):
 
     dut.uio_in.value[7] = 1;
 
-    int temp;
+    int temp
 
     for i in range(128):
         temp = dut.uo_out.value
