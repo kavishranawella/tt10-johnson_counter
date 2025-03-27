@@ -53,16 +53,28 @@ async def test_loopback(dut):
             f"Expected bit 7 to be 1, but got {dut.ui_in.value[7]}. "
             f"Full input: {dut.ui_in.value}"
         )
-        assert (dut.uo_out.value[1:7] == i-1), (
-            f"Test failed at iteration {i}: "
-            f"Expected bit 0:7 to be {i-1}, but got {dut.uo_out.value[1:7]}. "
-            f"Full output: {dut.uo_out.value}, Input: {dut.ui_in.value}"
-        )
-        assert (dut.uo_out.value[0] == ~temp[7]), (
-            f"Test failed at iteration {i}: "
-            f"Expected bit 7 to be {~temp[7]}, but got {dut.uo_out.value[0]}. "
-            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
-        )
+        if i != 0:
+            assert (dut.uo_out.value[1:7] == i-1), (
+                f"Test failed at iteration {i}: "
+                f"Expected bit 0:7 to be {i-1}, but got {dut.uo_out.value[1:7]}. "
+                f"Full output: {dut.uo_out.value}, Input: {dut.ui_in.value}"
+            )
+            assert (dut.uo_out.value[0] == ~temp[7]), (
+                f"Test failed at iteration {i}: "
+                f"Expected bit 7 to be {~temp[7]}, but got {dut.uo_out.value[0]}. "
+                f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+            )
+    await ClockCycles(dut.clk, 1)
+    assert (dut.uo_out.value[1:7] == 127), (
+        f"Test failed at iteration 127: "
+        f"Expected bit 0:7 to be 127, but got {dut.uo_out.value[1:7]}. "
+        f"Full output: {dut.uo_out.value}, Input: {dut.ui_in.value}"
+    )
+    assert (dut.uo_out.value[0] == ~temp[7]), (
+        f"Test failed at iteration 127: "
+        f"Expected bit 7 to be {~temp[7]}, but got {dut.uo_out.value[0]}. "
+        f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+    )
 
     dut.ui_in.value = 0
     await ClockCycles(dut.clk, 1)
@@ -92,16 +104,26 @@ async def test_loopback(dut):
             f"Expected bit 7 to be 0, but got {dut.ui_in.value[7]}. "
             f"Full input: {dut.ui_in.value}"
         )
-        assert (dut.uo_out.value[0:7] == temp[1:8]), (
-            f"Test failed at iteration {i}: "
-            f"Expected bit 0:7 to be {temp[1:8]}, but got {dut.uo_out.value[0:7]}. "
-            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
-        )
-        assert (dut.uo_out.value[7] == ~temp[0]), (
-            f"Test failed at iteration {i}: "
-            f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
-            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
-        )
+            assert (dut.uo_out.value[0:7] == temp[1:8]), (
+                f"Test failed at iteration {i}: "
+                f"Expected bit 0:7 to be {temp[1:8]}, but got {dut.uo_out.value[0:7]}. "
+                f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+            )
+            assert (dut.uo_out.value[7] == ~temp[0]), (
+                f"Test failed at iteration {i}: "
+                f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
+                f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+            )
+    assert (dut.uo_out.value[0:7] == temp[1:8]), (
+        f"Test failed at iteration {i}: "
+        f"Expected bit 0:7 to be {temp[1:8]}, but got {dut.uo_out.value[0:7]}. "
+        f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+    )
+    assert (dut.uo_out.value[7] == ~temp[0]), (
+        f"Test failed at iteration {i}: "
+        f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
+        f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+    )
 
 @cocotb.test()
 async def test_counter(dut):
