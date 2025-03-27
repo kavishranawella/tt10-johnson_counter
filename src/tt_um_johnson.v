@@ -18,8 +18,13 @@ module tt_um_johnson (
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n)
       uo_out <= 8'b0;
-    else if (ena)
-      uo_out <= ui_in;
+    else begin
+      uo_out[7] <= ~uo_out[0]
+      if (ui_in[7])
+        uo_out[6:0] <= ui_in[6:0];
+      else
+        uo_out[6:0] <= ui_in[7:1];
+    end
   end
  
 endmodule

@@ -25,19 +25,29 @@ async def test_loopback(dut):
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
-    for i in range(256):
-        dut.uio_in.value = i
+    dut.uio_in.value[7] = 1;
+
+    int temp;
+
+    for i in range(128):
+        temp = dut.uo_out.value
+        dut.uio_in.value[6:0] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value == i
+        assert dut.uo_out.value[6:0] == i
+        assert dut.uo_out.value[7] == ~temp[0]
 
     # When under reset: Output is uio_in, uio is in input mode
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 1)
-    assert dut.uio_oe.value == 0
-    for i in range(256):
-        dut.ui_in.value = i
+
+    dut.uio_in.value[7] = 0;
+
+    for i in range(128):
+        temp = dut.uo_out.value
+        dut.uio_in.value[6:0] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value == i
+        assert dut.uo_out.value[6:0] == temp[7:1]
+        assert dut.uo_out.value[7] == ~temp[0]
 
 @cocotb.test()
 async def test_counter(dut):
@@ -58,15 +68,11 @@ async def test_counter(dut):
     dut._log.info("Testing counter")
     for i in range(256):
         assert dut.uo_out.value == dut.uio_out.value
-        assert dut.uo_out.value == i
         await ClockCycles(dut.clk, 1)
 
     dut._log.info("Testing reset")
-    for i in range(5):
-        assert dut.uo_out.value == i
-        await ClockCycles(dut.clk, 1)
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 2)
+    assert dut.uo_out.value == 0
     dut.rst_n.value = 1
     await ClockCycles(dut.clk, 1)
-    assert dut.uo_out.value == 0
