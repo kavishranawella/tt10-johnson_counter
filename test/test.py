@@ -39,7 +39,7 @@ async def test_loopback(dut):
 
     for i in range(128):
         temp = dut.uo_out.value
-        dut.ui_in.value = ((dut.ui_in.value & 0x01) | (i << 1))
+        dut.ui_in.value = ((dut.ui_in.value & 0x80) | (i & 0x7F))
         await ClockCycles(dut.clk, 1)
         assert (dut.ui_in.value[1:7] == i), (
             f"Test failed at iteration {i}: "
