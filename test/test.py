@@ -42,7 +42,6 @@ async def test_loopback(dut):
             f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
             f"Full output: {dut.uo_out.value}, Previous output: {temp}"
         )
-)
 
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 1)
