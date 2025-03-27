@@ -53,7 +53,7 @@ async def test_loopback(dut):
             f"Expected bit 7 to be 1, but got {dut.ui_in.value[7]}. "
             f"Full input: {dut.ui_in.value}"
         )
-        if i==6:
+        if i==9:
             assert (dut.uo_out.value[0:7] == i), (
                 f"Test failed at iteration {i}: "
                 f"Expected bit 0:7 to be {i}, but got {dut.uo_out.value[0:7]}. "
