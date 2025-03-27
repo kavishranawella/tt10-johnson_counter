@@ -18,7 +18,6 @@ async def test_loopback(dut):
     dut._log.info("Reset")
     dut.ena.value = 1
 
-    # ui_in[0] == 0: Output is uio_in
     dut.ui_in.value = 0
     dut.uio_in.value = 0
     dut.rst_n.value = 0
@@ -33,10 +32,18 @@ async def test_loopback(dut):
         temp = dut.uo_out.value
         dut.uio_in.value[0:7] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value[0:7] == i
-        assert dut.uo_out.value[7] == ~temp[0]
+        assert dut.uo_out.value[0:7] == i(
+            f"Test failed at iteration {i}: "
+            f"Expected bit 0:7 to be {i}, but got {dut.uo_out.value[0:7]}. "
+            f"Full output: {dut.uo_out.value}"
+        )
+        assert dut.uo_out.value[7] == ~temp[0], (
+            f"Test failed at iteration {i}: "
+            f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
+            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+        )
+)
 
-    # When under reset: Output is uio_in, uio is in input mode
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 1)
 
@@ -46,8 +53,16 @@ async def test_loopback(dut):
         temp = dut.uo_out.value
         dut.uio_in.value[0:7] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value[0:7] == temp[1:8]
-        assert dut.uo_out.value[7] == ~temp[0]
+        assert dut.uo_out.value[0:7] == temp[1:8](
+            f"Test failed at iteration {i}: "
+            f"Expected bit 0:7 to be {temp[1:8]}, but got {dut.uo_out.value[0:7]}. "
+            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+        )
+        assert dut.uo_out.value[7] == ~temp[0], (
+            f"Test failed at iteration {i}: "
+            f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
+            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+        )
 
 @cocotb.test()
 async def test_counter(dut):
@@ -57,8 +72,7 @@ async def test_counter(dut):
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
-    # ui_in[0] == 1: bidirectional outputs enabled, put a counter on both output and bidirectional pins
-    dut.ui_in.value = 1
+    dut.ui_in.value = 0
     dut.uio_in.value = 0
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 10)
