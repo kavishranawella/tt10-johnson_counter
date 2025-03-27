@@ -18,13 +18,13 @@ async def test_loopback(dut):
     dut._log.info("Reset")
     dut.ena.value = 1
 
-    dut.ui_in.value = 0
+    dut.ui_in.value = 5
     dut.uio_in.value = 0
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
-    dut.ui_in.value[7] = 1;
+    dut.ui_in.value[7] = 1
 
     temp = 0
 
@@ -47,7 +47,7 @@ async def test_loopback(dut):
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 1)
 
-    dut.ui_in.value[7] = 0;
+    dut.ui_in.value[7] = 0
 
     for i in range(128):
         temp = dut.uo_out.value
