@@ -86,8 +86,6 @@ async def test_loopback(dut):
         f"Full input: {dut.ui_in.value}"
     )
 
-    await ClockCycles(dut.clk, 10)
-
     for i in range(128):
         temp = dut.uo_out.value
         dut.ui_in.value = ((dut.ui_in.value & 0x80) | (i & 0x7F))

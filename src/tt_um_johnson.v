@@ -33,7 +33,7 @@ module tt_um_johnson (
       if (ui_in[7])
         uo_out[6:0] <= ui_in[6:0];
       else
-        uo_out[6:0] <= ui_in[7:1];
+        uo_out[6:0] <= uo_out[7:1];
     end
   end
  
