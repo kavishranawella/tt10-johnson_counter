@@ -31,9 +31,9 @@ async def test_loopback(dut):
 
     for i in range(128):
         temp = dut.uo_out.value
-        dut.uio_in.value[6:0] = i
+        dut.uio_in.value[0:7] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value[6:0] == i
+        assert dut.uo_out.value[0:7] == i
         assert dut.uo_out.value[7] == ~temp[0]
 
     # When under reset: Output is uio_in, uio is in input mode
@@ -44,9 +44,9 @@ async def test_loopback(dut):
 
     for i in range(128):
         temp = dut.uo_out.value
-        dut.uio_in.value[6:0] = i
+        dut.uio_in.value[0:7] = i
         await ClockCycles(dut.clk, 1)
-        assert dut.uo_out.value[6:0] == temp[7:1]
+        assert dut.uo_out.value[0:7] == temp[1:8]
         assert dut.uo_out.value[7] == ~temp[0]
 
 @cocotb.test()
