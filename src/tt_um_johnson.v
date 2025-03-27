@@ -19,7 +19,7 @@ module tt_um_johnson (
     if (!rst_n)
       uo_out <= 8'b0;
     else begin
-      uo_out[7] <= ~uo_out[0]
+      uo_out[7] <= ~uo_out[0];
       if (ui_in[7])
         uo_out[6:0] <= ui_in[6:0];
       else
