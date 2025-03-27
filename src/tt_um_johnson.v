@@ -1,12 +1,22 @@
+/*
+* tt_um_johnson.v
+*
+* Test user module
+*
+* Author: Kavish Ranawella <bue6zr@virginia.edu>
+*/
+
+ `default_nettype none
+
 module tt_um_johnson (
-    input         clk,
-    input         rst_n,   // Active-low reset
-    input         ena,
-    input  [7:0]  ui_in,   // Dedicated input
-    output reg [7:0] uo_out,  // Dedicated output
-    input  [7:0]  uio_in,  // IO input (unused here)
-    output [7:0]  uio_out, // IO output
-    output [7:0]  uio_oe   // IO output enable (active high)
+    input  wire        clk,
+    input  wire        rst_n,   // Active-low reset
+    input  wire        ena,
+    input  wire [7:0]  ui_in,   // Dedicated input
+    output reg  [7:0]  uo_out,  // Dedicated output
+    input  wire [7:0]  uio_in,  // IO input (unused here)
+    output wire [7:0]  uio_out, // IO output
+    output wire [7:0]  uio_oe   // IO output enable (active high)
 );
  
   // For this pass-through design, we simply copy uo_out to uio_out.
