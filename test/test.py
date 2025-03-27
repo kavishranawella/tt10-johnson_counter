@@ -24,14 +24,14 @@ async def test_loopback(dut):
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
-    dut.ui_in.value = 1
+    dut.ui_in.value = (1 << 7)
     await ClockCycles(dut.clk, 1)
-    assert (dut.ui_in.value[0:6] == 0), (
-        f"Expected bit 0:6 to be 0, but got {int(dut.ui_in.value[0:6])}. "
+    assert (dut.ui_in.value[1:7] == 0), (
+        f"Expected bit 0:6 to be 0, but got {int(dut.ui_in.value[1:7])}. "
         f"Full input: {dut.ui_in.value}"
     )
-    assert (dut.ui_in.value[7] == 1), (
-        f"Expected bit 7 to be 1, but got {dut.ui_in.value[7]}. "
+    assert (dut.ui_in.value[0] == 1), (
+        f"Expected bit 7 to be 1, but got {dut.ui_in.value[0]}. "
         f"Full input: {dut.ui_in.value}"
     )
 
@@ -39,31 +39,30 @@ async def test_loopback(dut):
 
     for i in range(128):
         temp = dut.uo_out.value
-        dut.ui_in.value = ((dut.ui_in.value & 0x1) | (i<<1))
+        dut.ui_in.value = ((dut.ui_in.value & 0x80) | (i & 0x7F))
         await ClockCycles(dut.clk, 1)
-        assert (dut.ui_in.value[0:6] == i), (
+        assert (dut.ui_in.value[1:7] == i), (
             f"Test failed at iteration {i}: "
             f"Input set to {(dut.ui_in.value & 0x80)} | {(i & 0x7F)}. "
             f"Expected bit 0:7 to be {i}, but got {dut.ui_in.value[1:7]}. "
             f"Full input: {dut.ui_in.value}"
         )
-        assert (dut.ui_in.value[7] == 1), (
+        assert (dut.ui_in.value[0] == 1), (
             f"Test failed at iteration {i}: "
             f"Input set to {(dut.uio_in.value & 0x80)} | {(i & 0x7F)}. "
             f"Expected bit 7 to be 1, but got {dut.ui_in.value[7]}. "
             f"Full input: {dut.ui_in.value}"
         )
-        if i==9:
-            assert (dut.uo_out.value[0:6] == i), (
-                f"Test failed at iteration {i}: "
-                f"Expected bit 0:7 to be {i}, but got {dut.uo_out.value[0:7]}. "
-                f"Full output: {dut.uo_out.value}, Input: {dut.ui_in.value}"
-            )
-            assert (dut.uo_out.value[7] == ~temp[0]), (
-                f"Test failed at iteration {i}: "
-                f"Expected bit 7 to be {~temp[0]}, but got {dut.uo_out.value[7]}. "
-                f"Full output: {dut.uo_out.value}, Previous output: {temp}"
-            )
+        assert (dut.uo_out.value[1:7] == i-1), (
+            f"Test failed at iteration {i}: "
+            f"Expected bit 0:7 to be {i-1}, but got {dut.uo_out.value[1:7]}. "
+            f"Full output: {dut.uo_out.value}, Input: {dut.ui_in.value}"
+        )
+        assert (dut.uo_out.value[0] == ~temp[7]), (
+            f"Test failed at iteration {i}: "
+            f"Expected bit 7 to be {~temp[7]}, but got {dut.uo_out.value[0]}. "
+            f"Full output: {dut.uo_out.value}, Previous output: {temp}"
+        )
 
     dut.ui_in.value = 0
     await ClockCycles(dut.clk, 1)
