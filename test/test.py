@@ -26,8 +26,8 @@ async def test_loopback(dut):
 
     dut.ui_in.value = (1 << 7)
     await ClockCycles(dut.clk, 1)
-    assert (dut.ui_in.value[0:7] == 0), (
-        f"Expected bit 0:7 to be 0, but got {dut.ui_in.value[0:7]}. "
+    assert (dut.ui_in.value[0:6] == 0), (
+        f"Expected bit 0:6 to be 0, but got {int(dut.ui_in.value[0:6])}. "
         f"Full input: {dut.ui_in.value}"
     )
     assert (dut.ui_in.value[7] == 1), (
